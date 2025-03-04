@@ -1,7 +1,6 @@
 const API_KEY = 'c9e235a23b644fd3b0d144321250303';
 const BASE_URL = 'https://api.weatherapi.com/v1';
 
-// Buscar o clima da cidade
 async function buscarClima() {
     const cidade = document.getElementById("cidade").value;
     if (!cidade) {
@@ -47,7 +46,6 @@ async function buscarClima() {
     }
 }
 
-// Salvar histórico de pesquisas
 function salvarHistorico(cidade) {
     let historico = JSON.parse(localStorage.getItem("historico")) || [];
     if (!historico.includes(cidade)) {
@@ -57,7 +55,6 @@ function salvarHistorico(cidade) {
     }
 }
 
-// Exibir histórico
 function atualizarHistorico() {
     let historico = JSON.parse(localStorage.getItem("historico")) || [];
     let historicoHTML = "";
@@ -67,7 +64,6 @@ function atualizarHistorico() {
     document.getElementById("historico").innerHTML = historicoHTML;
 }
 
-// Salvar cidade nos favoritos
 function salvarFavorito() {
     const cidade = document.getElementById("cidade").value;
     if (!cidade) {
@@ -83,7 +79,6 @@ function salvarFavorito() {
     }
 }
 
-// Exibir favoritos
 function atualizarFavoritos() {
     let favoritos = JSON.parse(localStorage.getItem("favoritos")) || [];
     let favoritosHTML = "";
@@ -93,7 +88,6 @@ function atualizarFavoritos() {
     document.getElementById("favoritos").innerHTML = favoritosHTML;
 }
 
-// Carregar histórico e favoritos ao iniciar
 window.onload = () => {
     atualizarHistorico();
     atualizarFavoritos();
@@ -127,4 +121,31 @@ async function enviarFeedback() {
         document.getElementById("status").innerText = "Erro ao conectar ao servidor.";
     }
 };
+
+async function carregarFeedbacks() {
+    try {
+        const resposta = await fetch("http://localhost:3000/feedbacks");
+        const feedbacks = await resposta.json();
+
+        let listaHTML = "";
+        feedbacks.forEach(fb => {
+            listaHTML += `<li><strong>${fb.nome}:</strong> ${fb.mensagem} <em>(${new Date(fb.data).toLocaleDateString()})</em></li>`;
+        });
+
+        document.getElementById("lista-feedbacks").innerHTML = listaHTML;
+    } catch (erro) {
+        document.getElementById("lista-feedbacks").innerHTML = "<li>Erro ao carregar feedbacks.</li>";
+    }
+}
+
+window.onload = () => {
+    carregarFeedbacks();
+    atualizarHistorico();
+    atualizarFavoritos();
+};
+
+const API_FEEDBACK = window.location.hostname === "localhost" 
+    ? "http://localhost:3000/feedbacks"
+    : "https://meu-servidor-online.com/feedbacks";
+
 
