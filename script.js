@@ -146,6 +146,4 @@ window.onload = () => {
 
 const API_FEEDBACK = window.location.hostname === "localhost" 
     ? "http://localhost:3000/feedbacks"
-    : "https://meu-servidor-online.com/feedbacks";
-
 
